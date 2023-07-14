@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """write_context.py -- create context.yaml & support databases for SSO sims
 
 This script indexes output in TOAST's native HDF5 format.  You can
