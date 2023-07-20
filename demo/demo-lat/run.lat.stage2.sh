@@ -12,7 +12,7 @@ band_name=f`printf "%03i" $band`
 
 function run_one() {
     #beam_file=${beam_dir}/${tele}_${band_name}_beam.p
-    beam_file=/mnt/so1/shared/site-pipeline/bcp/${tele}_${band_name}_beam.h5
+    beam_file=../../dist/bcp/${tele}_${band_name}_beam.h5
     prefix=${band_name}_${tube}_${sso_name}
 
     # NOTE:  These parameters can also be set with a config file...
