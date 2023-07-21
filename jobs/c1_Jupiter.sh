@@ -25,4 +25,4 @@ which python
 
 print_double_line
 echo "Running run_planet_sims_pipeline.py..."
-./run_planet_sims_pipeline.py
+./run_planet_sims_pipeline.py c1 Jupiter
