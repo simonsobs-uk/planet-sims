@@ -1,3 +1,6 @@
-out_*/
-*.txt
 dist/
+jobs/out_*/
+*.txt
+*.log
+*.out
+*.err
