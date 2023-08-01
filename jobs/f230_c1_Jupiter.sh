@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+# This is the no. of logical CPUs requested
+REQUEST_CPUS="$(condor_q -jobads "$_CONDOR_JOB_AD" -af RequestCpus)"
+echo "$REQUEST_CPUS logical CPUs requested" >&2
+# devide this by 2 to get the no. of physical CPUs
+REQUEST_CPUS="$((REQUEST_CPUS / 2))"
+echo "$REQUEST_CPUS physical CPUs requested" >&2
+
+export OPENBLAS_NUM_THREADS="$REQUEST_CPUS"
+export JULIA_NUM_THREADS="$REQUEST_CPUS"
+export TF_NUM_THREADS="$REQUEST_CPUS"
+export MKL_NUM_THREADS="$REQUEST_CPUS"
+export NUMEXPR_NUM_THREADS="$REQUEST_CPUS"
+export OMP_NUM_THREADS="$REQUEST_CPUS"
+echo "*_NUM_THREADS set to $REQUEST_CPUS" >&2
+
 while true; do
     date >&2
     free -h >&2
