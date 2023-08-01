@@ -4,3 +4,4 @@ jobs/out_*/
 *.log
 *.out
 *.err
+jobs/*.ini
