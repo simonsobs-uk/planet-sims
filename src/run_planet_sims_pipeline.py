@@ -185,6 +185,26 @@ def get_beam_file(tele: str, band_name: str) -> Path:
     )
 
 
+def take_first_n_obs(
+    path: Path,
+    out_path: Path,
+    n: int,
+) -> None:
+    """Take first n observations from a schedule file.
+
+    :param path: Path to the schedule file.
+    :param out_path: Path to the output schedule file.
+    :param n: Number of observations to take.
+
+    Take first n + 3 lines as the first 3 are headers and comments
+    """
+    with path.open("r") as f:
+        lines = f.readlines()
+    out_path.parent.mkdir(exist_ok=True)
+    with out_path.open("w") as f:
+        f.writelines(lines[: n + 3])
+
+
 def run_one(
     tele: str,
     band_name: str,
@@ -270,7 +290,7 @@ def stage1(
     tele: str = "LAT",
     start: str = "2023-06-08 00:00:00",
     stop: str = "2023-06-09 00:00:00",
-):
+) -> Path:
     logger.info(f"Running stage 1 for %s, Offsets are", tube)
     offset_az, offset_el, tube_radius = get_wafer_offset_func(tube)
 
@@ -285,9 +305,11 @@ def stage1(
         stop=stop,
         sso_name=sso_name,
     )
+    return schedule_file
 
 
 def stage2(
+    schedule_file: Path,
     band_name: str,
     tube: str,
     sso_name: str,
@@ -309,7 +331,6 @@ def stage2(
         raise ValueError(f"Unknown tube/band combination: {tube}/{band_name}")
     logger.info(f"Sampling frequency is set to {fsample} Hz")
 
-    schedule = Path("schedules") / f"schedule_{tube}_{sso_name}.txt"
     beam_file = get_beam_file("LAT", band_name)
     run_one(
         tele="LAT",
@@ -317,7 +338,7 @@ def stage2(
         tube=tube,
         sso_name=sso_name,
         fsample=fsample,
-        schedule=schedule,
+        schedule=schedule_file,
         beam_file=beam_file,
         ntask=1,
     )
@@ -327,15 +348,19 @@ def main(
     band_name: str,
     tube: str,
     sso_name: str,
+    n_obs: int = 0,
 ) -> None:
     """Run the planet sims pipeline.
 
     :param band_name: Band name, e.g. f030 f040 f090 f150 f230 f290
     :param tube: Tube name, e.g. c1 i1 i5 i4
     :param sso_name: Name of the Solar System Object, e.g. Uranus Saturn Mars Jupiter
+    :param n_obs: Number of observations to take. If non-positive, take all observations.
     """
-    stage1(tube, sso_name)
-    stage2(band_name, tube, sso_name)
+    schedule_file = stage1(tube, sso_name)
+    if n_obs > 0:
+        take_first_n_obs(schedule_file, schedule_file, n_obs)
+    stage2(schedule_file, band_name, tube, sso_name)
 
 
 if __name__ == "__main__":
