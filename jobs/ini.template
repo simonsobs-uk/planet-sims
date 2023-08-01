@@ -1,14 +1,15 @@
-executable = f230_c1_Jupiter.sh
+executable = ../src/run_planet_sims_pipeline.sh
+arguments = "{band_name} {tube} {sso_name} -n 6"
 
-log = f230_c1_Jupiter.log
-output = f230_c1_Jupiter.out
-error = f230_c1_Jupiter.err
+log = {band_name}_{tube}_{sso_name}.log
+output = {band_name}_{tube}_{sso_name}.out
+error = {band_name}_{tube}_{sso_name}.err
 stream_error = True
 stream_output = True
 
 should_transfer_files = Yes
 transfer_input_files = ../../../source/htcondor_ex/dist/pmpm-20230718-Linux-x86_64-OpenMPI.tar.gz,../src/run_planet_sims_pipeline.py
-transfer_output_files = schedules,out_f230_c1_Jupiter
+transfer_output_files = schedules,out_{band_name}_{tube}_{sso_name}
 when_to_transfer_output = ON_EXIT
 
 request_cpus = 16
