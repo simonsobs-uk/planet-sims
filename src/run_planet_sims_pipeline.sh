@@ -53,4 +53,4 @@ which python >&2
 
 echo '========================================================================' >&2
 echo 'Running run_planet_sims_pipeline.py...' >&2
-command time -v ./run_planet_sims_pipeline.py f230 c1 Jupiter
+command time -v ./run_planet_sims_pipeline.py "$@"
